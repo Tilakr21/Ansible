@@ -53,7 +53,7 @@
         type: "{{ rec.set.type }}"
         value: "{{ rec.set.value }}"
       when: INFRA == "destroy"
-      loop: INSTANCES
+      loop: "{{ INSTANCES }}"
 
       
 
