@@ -80,7 +80,7 @@
         msg: "{{ results }}"
 
     - name: load the data inside the database
-      ansible.builtin.command: mongosh --host "{{ MONGODB }}" </app/db/master-data.js
+      ansible.builtin.command: mongosh --host "{{ MONGODB }}" < /app/db/master-data.js
       when: results.stdout | int < 0
     
     - name: start catalogue
