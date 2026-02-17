@@ -29,7 +29,7 @@
 
     - name: Printing the output 
       ansible.builtin.debug:
-       msg: "{{ instance_output.instance[0].network_interfaces.private_ip_address }}"
+       msg: "{{ instance_output.instances[0].network_interfaces.private_ip_address }}"
       
 
     
