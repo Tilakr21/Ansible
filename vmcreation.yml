@@ -57,7 +57,7 @@
       loop: "{{ instance_output.results }}"
       when: 
       - INFRA == "creation"
-      - "{{ instance_output.results.item.item }} == frontend" 
+      - item.item == "frontend" 
 
     - name: Retrieve the details for tilakrepalle.in 
       amazon.aws.route53:
