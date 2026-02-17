@@ -28,14 +28,6 @@
       when: INFRA == "creation"
       register: instance_output
 
-    - name: Destroy EC2 instances
-      amazon.aws.ec2_instance:
-        name: "{{ item }}-{{ ENVIROMENT }}"
-        state: absent
-        wait: yes
-      loop: "{{ INSTANCES }}"
-      when: INFRA == "destroy"
-
     # - name: Print public IPs
     #   ansible.builtin.debug:
     #     msg: "Instance {{ item.item }}-{{ ENVIROMENT }} Public IP: {{ item.instances[0].private_ip_address }}"
@@ -72,6 +64,14 @@
         value: "{{ rec.set.value }}"
       when: INFRA == "destroy"
       loop: "{{ INSTANCES }}"
+
+    - name: Destroy EC2 instances
+      amazon.aws.ec2_instance:
+        name: "{{ item }}-{{ ENVIROMENT }}"
+        state: absent
+        wait: yes
+      loop: "{{ INSTANCES }}"
+      when: INFRA == "destroy"
 
       
 
