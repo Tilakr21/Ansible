@@ -68,6 +68,10 @@
       register: rec
       loop: "{{ INSTANCES }}"
 
+    - name: Get the details of records 
+      ansible.builtin.debug:
+        msg: "{{ rec }}"
+
     - name: Delete tilakrepalle.in A record using the results from the get command
       amazon.aws.route53:
         state: absent
