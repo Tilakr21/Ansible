@@ -30,7 +30,7 @@
 
     - name: Printing the output 
       ansible.builtin.debug:
-       msg: instance_output
+       msg: "{{ instance_output }}"
       
 
     
