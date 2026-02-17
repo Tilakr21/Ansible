@@ -76,10 +76,10 @@
       amazon.aws.route53:
         state: absent
         zone: "{{ ZONE }}"
-        record: "{{ item.record }}"
+        record: "{{ item.set.record }}"
         ttl: 1
         type: A
-        value: "{{ item.value }}"
+        value: "{{ item.set.value }}"
       when: INFRA == "destroy"
       loop: "{{ rec.results }}"
 
