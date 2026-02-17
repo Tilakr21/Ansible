@@ -25,7 +25,7 @@
           Name: "{{ INSTANCES.item }}"
           Enviroment: "{{ ENVIROMENT }}"
       loop: "{{ INSTANCES }}"
-      when: INFRA == creation
+      when: INFRA == "creation"
       register: instance_output
 
     - name: Printing the output 
