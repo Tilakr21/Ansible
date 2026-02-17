@@ -41,9 +41,10 @@
         type: A
         ttl: 1
         value: "{{ item.instances[0].private_ip_address }}"
+        overwrite: true
       loop: "{{ instance_output.results }}"
       when: INFRA == "creation"
-      overwrite: true
+      
 
     - name: Delete new.foo.com A record using the results from the get command
       amazon.aws.route53:
