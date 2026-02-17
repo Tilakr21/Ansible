@@ -28,10 +28,18 @@
       when: INFRA == "creation"
       register: instance_output
 
-    - name: Print public IPs
-      ansible.builtin.debug:
-        msg: "Instance {{ item.item }}-{{ ENVIROMENT }} Public IP: {{ item.instances[0].private_ip_address }}"
-      loop: "{{ instance_output.results }}"
+    - name: Destroy EC2 instances
+      amazon.aws.ec2_instance:
+        name: "{{ item }}-{{ ENVIROMENT }}"
+        state: absent
+        wait: yes
+      loop: "{{ INSTANCES }}"
+      when: INFRA == "destroy"
+
+    # - name: Print public IPs
+    #   ansible.builtin.debug:
+    #     msg: "Instance {{ item.item }}-{{ ENVIROMENT }} Public IP: {{ item.instances[0].private_ip_address }}"
+    #   loop: "{{ instance_output.results }}"
 
     - name: Update new.foo.com as an A record with a list of 3 IPs and wait until the changes have been replicated
       amazon.aws.route53:
@@ -44,15 +52,23 @@
         overwrite: true
       loop: "{{ instance_output.results }}"
       when: INFRA == "creation"
-      
+    
+    - name: Retrieve the details for tilakrepalle.in 
+      amazon.aws.route53:
+        state: get
+        zone: "{{ ZONE }}"
+        record: "{{ item }}-{{ ENVIROMENT }}.{{ ZONE }}"
+        type: A
+      register: rec
+      loop: "{{ INSTANCES }}"
 
-    - name: Delete new.foo.com A record using the results from the get command
+    - name: Delete tilakrepalle.in A record using the results from the get command
       amazon.aws.route53:
         state: absent
-        zone: foo.com
+        zone: "{{ ZONE }}"
         record: "{{ rec.set.record }}"
-        ttl: "{{ rec.set.ttl }}"
-        type: "{{ rec.set.type }}"
+        ttl: 1
+        type: A
         value: "{{ rec.set.value }}"
       when: INFRA == "destroy"
       loop: "{{ INSTANCES }}"
