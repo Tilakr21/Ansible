@@ -80,7 +80,7 @@
         ttl: 1
         type: A
         value: "{{ item.set.value }}"
-      when: INFRA == "destroy"
+      when: INFRA == "destroy" 
       loop: "{{ rec.results }}"
 
     - name: Destroy EC2 instances
