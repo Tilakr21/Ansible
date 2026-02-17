@@ -1,7 +1,7 @@
 - name: creation of vm's in aws
   hosts: local
   connection: local
-  var:
+  vars:
    AMI: ami-0220d79f3f480ecf5
    SECURITY_GROUP: sg-0039b9fd218e26beb
    ENVIROMENT: dev
