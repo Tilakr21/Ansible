@@ -42,7 +42,7 @@
 
     - name: Install packages based on package.json using the npm module
       community.general.npm:
-        path: /path/to/my/app  # Directory containing package.json
+        path: /app  # Directory containing package.json
         state: present  
 
     - name: Copying the catalogue repo
