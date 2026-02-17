@@ -1,0 +1,79 @@
+- name: Configure the catalogue server 
+  hosts: catalogue
+  become: true
+
+  tasks:
+     #dnf module disable nodejs -y
+    - name: Disable the deafult module 
+      ansible.builtin.command: dnf module disable nodejs -y
+    
+    - name: Enable the node module version 20
+      ansible.builtin.command: dnf module disable nodejs -y
+
+    - name: Installing mongo database 
+      ansible.builtin.package:
+       name: nodejs
+       state: present
+
+    - name: Ensure the "roboshop" system account exists
+      ansible.builtin.user:
+        name: roboshop
+        state: present
+        system: true  # Designates this as a system user
+        shell: /sbin/nologin # Prevents interactive shell login
+        home: /app
+        comment: "roboshop system user"
+
+    - name: Create directory 
+      ansible.builtin.file:
+        path: /app
+        state: directory
+
+    - name: Download a file to the remote server
+      ansible.builtin.get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+        dest: /tmp/catalogue.zip
+
+    - name: unzip files 
+      ansible.builtin.unarchive:
+        src: /tmp/catalogue.zip
+        dest: /app
+        remote_src: true 
+
+    - name: Install packages based on package.json using the npm module
+      community.general.npm:
+        path: /path/to/my/app  # Directory containing package.json
+        state: present  
+
+    - name: Copying the catalogue repo
+      ansible.builtin.template:
+        src: catalogue.service
+        dest: /etc/systemd/system/catalogue.service
+
+    - name: Enabling & starting the service of mongo 
+      ansible.builtin.service:
+        name: catalogue
+        enabled: yes
+        state: restarted
+
+    - name: Copying the mongo repo
+      ansible.builtin.copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo
+
+    - name: Installing mongo database 
+      ansible.builtin.package:
+       name: mongodb-mongosh
+       state: present
+  
+    - name: Checking the data in mongo
+      ansible.builtin.command: mongosh --host "{{ MONGODB }}" --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+      register: results
+
+    - name: message of results
+      ansible.builtin.debug:
+        msg: "{{ results }}"
+
+    # - name: load the data inside the database
+    #   ansible.builtin.command: mongosh --host "{{ MONGODB }}" </app/db/master-data.js
+    #   when: results.strd
