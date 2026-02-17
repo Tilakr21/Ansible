@@ -1,0 +1,36 @@
+- name: creation of vm's in aws
+  hosts: local
+  connection: local
+  var:
+   AMI: ami-0220d79f3f480ecf5
+   SECURITY_GROUP: sg-0039b9fd218e26beb
+   ENVIROMENT: dev
+   INSTANCES: 
+     - mongodb
+     - catalogue
+   INFRA: creation
+
+  task:
+
+    - name: start an instance with a public IP address
+      amazon.aws.ec2_instance:
+        name: "{{ INSTANCES.item }}"
+        vpc_subnet_id: default
+        instance_type: t3.micro
+        security_group: "{{ SECURITY_GROUP }}"
+        network_interfaces:
+          - assign_public_ip: true
+        image_id: "{{ AMI }}"
+        tags:
+          Name: "{{ INSTANCES.item }}"
+          Enviroment: "{{ ENVIROMENT }}"
+      loop: INSTANCES
+      when: INFRA == creation
+      register: instance_output
+
+    - name: Printing the output 
+      ansible.inbulid.debug:
+       msg: instance_output
+      
+
+    
