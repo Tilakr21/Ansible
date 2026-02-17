@@ -30,7 +30,7 @@
 
     - name: Print public IPs
       ansible.builtin.debug:
-        msg: "Instance {{ item.item }}-{{ ENVIROMENT }} Public IP: {{ item.instances[0].public_ip_address }}"
+        msg: "Instance {{ item.item }}-{{ ENVIROMENT }} Public IP: {{ item.instances[0].private_ip_address }}"
       loop: "{{ instance_output.results }}"
 
     - name: Update new.foo.com as an A record with a list of 3 IPs and wait until the changes have been replicated
@@ -40,7 +40,7 @@
         record: "{{ item.item }}-{{ ENVIROMENT }}.{{ ZONE }}"
         type: A
         ttl: 1
-        value: "{{ item.instances[0].public_ip_address }}"
+        value: "{{ item.instances[0].private_ip_address }}"
       loop: "{{ instance_output.results }}"
       when: INFRA == "creation"
 
