@@ -22,7 +22,7 @@
           - assign_public_ip: true
         image_id: "{{ AMI }}"
         tags:
-          Name: "{{ INSTANCES.item }}"
+          Name: "{{ item }}"
           Enviroment: "{{ ENVIROMENT }}"
       loop: "{{ INSTANCES }}"
       when: INFRA == "creation"
