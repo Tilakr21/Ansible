@@ -10,12 +10,12 @@
     - name: Enable the node module version 20
       ansible.builtin.command: dnf module disable nodejs -y
 
-    - name: Installing mongo database 
+    - name: Installing nodejs in server
       ansible.builtin.package:
        name: nodejs
        state: present
 
-    - name: Ensure the "roboshop" system account exists
+    - name: Ensure the roboshop system account exists
       ansible.builtin.user:
         name: roboshop
         state: present
