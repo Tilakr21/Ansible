@@ -77,7 +77,6 @@
         state: absent
         zone: "{{ ZONE }}"
         record: "{{ item.set.record }}"
-        ttl: 1
         type: A
         value: "{{ item.set.value }}"
       when: INFRA == "destroy" 
