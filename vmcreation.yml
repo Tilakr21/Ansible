@@ -45,6 +45,20 @@
       loop: "{{ instance_output.results }}"
       when: INFRA == "creation"
     
+    - name: Update new.foo.com as an A record with a list of 3 IPs and wait until the changes have been replicated
+      amazon.aws.route53:
+        state: present
+        zone: "{{ ZONE }}"
+        record: "roboshop-{{ ENVIROMENT }}.{{ ZONE }}" 
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].publi_ip_address }}"
+        overwrite: true
+      loop: "{{ instance_output.results }}"
+      when: 
+      - INFRA == "creation"
+      - "{{ instance_output.results.item.item }} == frontend" 
+
     - name: Retrieve the details for tilakrepalle.in 
       amazon.aws.route53:
         state: get
