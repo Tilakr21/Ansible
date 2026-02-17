@@ -29,7 +29,7 @@
       register: instance_output
 
     - name: Printing the output 
-      ansible.inbulid.debug:
+      ansible.inbuild.debug:
        msg: instance_output
       
 
