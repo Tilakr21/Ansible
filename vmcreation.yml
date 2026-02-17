@@ -24,7 +24,7 @@
         tags:
           Name: "{{ INSTANCES.item }}"
           Enviroment: "{{ ENVIROMENT }}"
-      loop: INSTANCES
+      loop: "{{ INSTANCES }}"
       when: INFRA == creation
       register: instance_output
 
