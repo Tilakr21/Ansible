@@ -76,12 +76,12 @@
       amazon.aws.route53:
         state: absent
         zone: "{{ ZONE }}"
-        record: "{{ rec.set.record }}"
+        record: "{{ item.record }}"
         ttl: 1
         type: A
-        value: "{{ rec.set.value }}"
+        value: "{{ item.value }}"
       when: INFRA == "destroy"
-      loop: "{{ INSTANCES }}"
+      loop: "{{ rec.results }}"
 
     - name: Destroy EC2 instances
       amazon.aws.ec2_instance:
