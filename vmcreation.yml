@@ -49,10 +49,10 @@
       amazon.aws.route53:
         state: present
         zone: "{{ ZONE }}"
-        record: "roboshop-{{ ENVIROMENT }}.{{ ZONE }}" 
+        record: "roboshop-{{ ENVIROMENT }}.{{ ZONE }}" # udating the public IP
         type: A
         ttl: 1
-        value: "{{ item.instances[0].publi_ip_address }}"
+        value: "{{ item.instances[0].public_ip_address }}"
         overwrite: true
       loop: "{{ instance_output.results }}"
       when: 
