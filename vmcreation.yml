@@ -14,14 +14,14 @@
 
     - name: start an instance with a public IP address
       amazon.aws.ec2_instance:
-        name: "{{ item }}"
+        name: '"{{ item }}"-"{{ ENVIROMENT }}"'
         instance_type: t3.micro
         security_group: "{{ SECURITY_GROUP }}"
         network:
           assign_public_ip: true
         image_id: "{{ AMI }}"
         tags:
-          Name: "{{ item }}-{{ ENVIROMENT }}"
+          Name: '"{{ item }}"-"{{ ENVIROMENT }}"'
           Enviroment: "{{ ENVIROMENT }}"
       loop: "{{ INSTANCES }}"
       when: INFRA == "creation"
@@ -29,7 +29,7 @@
 
     - name: Printing the output 
       ansible.builtin.debug:
-       msg: "{{ instance_output }}"
+       msg: "{{ instance_output.instance[0].network_interfaces.private_ip_address }}"
       
 
     
