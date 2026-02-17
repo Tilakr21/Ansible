@@ -59,28 +59,38 @@
       - INFRA == "creation"
       - item.item == "frontend" 
 
-    - name: Retrieve the details for tilakrepalle.in 
+    - name: Deletion of records in route 53
       amazon.aws.route53:
-        state: get
-        zone: "{{ ZONE }}"
-        record: "{{ item }}-{{ ENVIROMENT }}.{{ ZONE }}"
-        type: A
-      register: rec
-      loop: "{{ INSTANCES }}"
+         state: absent
+         zone: "{{ ZONE }}"
+         record: "{{ item}}-{{ ENVIROMENT }}.{{ ZONE }}"
+         type: A
+         wait: yes
+      when: INFRA = "destroy"
 
-    - name: Get the details of records 
-      ansible.builtin.debug:
-        msg: "{{ rec }}"
 
-    - name: Delete tilakrepalle.in A record using the results from the get command
-      amazon.aws.route53:
-        state: absent
-        zone: "{{ ZONE }}"
-        record: "{{ item.set.record }}"
-        type: A
-        value: "{{ item.set.value }}"
-      when: INFRA == "destroy" 
-      loop: "{{ rec.results }}"
+    # - name: Retrieve the details for tilakrepalle.in 
+    #   amazon.aws.route53:
+    #     state: get
+    #     zone: "{{ ZONE }}"
+    #     record: "{{ item }}-{{ ENVIROMENT }}.{{ ZONE }}"
+    #     type: A
+    #   register: rec
+    #   loop: "{{ INSTANCES }}"
+
+    # - name: Get the details of records 
+    #   ansible.builtin.debug:
+    #     msg: "{{ rec }}"
+
+    # - name: Delete tilakrepalle.in A record using the results from the get command
+    #   amazon.aws.route53:
+    #     state: absent
+    #     zone: "{{ ZONE }}"
+    #     record: "{{ item.set.record }}"
+    #     type: A
+    #     value: "{{ item.set.value }}"
+    #   when: INFRA == "destroy" 
+    #   loop: "{{ rec.results }}"
 
     - name: Destroy EC2 instances
       amazon.aws.ec2_instance:
