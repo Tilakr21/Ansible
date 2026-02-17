@@ -9,6 +9,7 @@
      - mongodb
      - catalogue
    INFRA: creation
+   ZONE: tilakrepalle.in
 
   tasks:
 
@@ -29,8 +30,30 @@
 
     - name: Print public IPs
       ansible.builtin.debug:
-        msg: "Instance {{ item.item }} Public IP: {{ item.instances[0].public_ip_address }}"
+        msg: "Instance {{ item.item }}-{{ ENVIROMENT }} Public IP: {{ item.instances[0].public_ip_address }}"
       loop: "{{ instance_output.results }}"
+
+    - name: Update new.foo.com as an A record with a list of 3 IPs and wait until the changes have been replicated
+      amazon.aws.route53:
+        state: present
+        zone: "{{ ZONE }}"
+        record: "{{ item.item }}-{{ ENVIROMENT }}.{{ ZONE }}"
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].public_ip_address }}"
+      loop: "{{ instance_output.results }}"
+      when: INFRA == "creation"
+
+    - name: Delete new.foo.com A record using the results from the get command
+      amazon.aws.route53:
+        state: absent
+        zone: foo.com
+        record: "{{ rec.set.record }}"
+        ttl: "{{ rec.set.ttl }}"
+        type: "{{ rec.set.type }}"
+        value: "{{ rec.set.value }}"
+      when: INFRA == "destroy"
+      loop: INSTANCES
 
       
 
