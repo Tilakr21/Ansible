@@ -67,6 +67,7 @@
          type: A
          wait: yes
       when: INFRA == "destroy"
+      loop: "{{ INSTANCES }}"
 
 
     # - name: Retrieve the details for tilakrepalle.in 
